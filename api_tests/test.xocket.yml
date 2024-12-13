@@ -1,28 +1,40 @@
 endpoint: "http://localhost:3000"
 tests:
-  - params:
-      query: "all"
+  - path: "/get/stuff"
+    params:
+      query:
+        - "all"
       filter:
         - "used"
         - "last-40"
-      headers:
-        - auth: "Bearer $USER_TOKEN"
-        - other: "$ENV"
-        - user-agent: "<-nil->"
+    method: "POST"
+    headers:
+       auth:
+         - "Bearer $USER_TOKEN"
+       other:
+         - "$ENV"
+       user-agent:
+         - "<nil>"
+    form:
+      name: "name"
+      other: true
+      _FILES:
+        - name: "$PWD/api_tests/test.xocket.yml"
     expected:
       status: 200
-      type: "JSON"
+      type: "json"
       body:
-        shape: "array-soft:min=1;len=any"
+        shape: "array-soft:min=1:len=any"
         model:
-          id: "<number:integer>"
+          id: "<integer>"
           object:
             name: "<string:min=10:max=30>"
-            price: "<number:float>"
+            price: "<float>"
             description: "<string:min=50>"
   - params:
-      get: 1
+      get:
+      - 1
     expected:
       status: 405
       type: "text"
-      body: "<string:r='error: (aA-zZ).*\n'>"
+      content: "<string:r='error: (aA-zZ).*\n'>"
