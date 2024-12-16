@@ -50,12 +50,14 @@ const (
 	FilterInteger FilterType = "integer"
 	FilterFloat   FilterType = "float"
 	FilterString  FilterType = "string"
+	FilterNil     FilterType = "nil"
 )
 
 var validFilterType = map[FilterType]struct{}{
 	FilterInteger: {},
 	FilterFloat:   {},
 	FilterString:  {},
+	FilterNil:     {},
 }
 
 func (e *FilterType) IsValid() bool {

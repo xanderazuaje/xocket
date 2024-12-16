@@ -24,5 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	parsing.GetFilter("<integer:max=2>")
+	f, _ := parsing.GetFilter("<integer:max=2>")
+	log.Println(f)
+
 }

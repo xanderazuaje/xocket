@@ -37,4 +37,4 @@ tests:
     expected:
       status: 405
       type: "text"
-      content: "<string:r='error: (aA-zZ).*\n'>"
+      content: "<string:r='error: [aA-zZ]\w.*\n'>"
