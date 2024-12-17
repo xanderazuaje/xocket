@@ -2,6 +2,7 @@ package colors
 
 import (
 	"fmt"
+	"github.com/xanderazuaje/xocket/flags"
 	"regexp"
 	"strings"
 	"time"
@@ -12,7 +13,6 @@ type color string
 const (
 	Reset   color = "\033[0m"
 	Bold    color = "\033[1m"
-	NoBold  color = "\033[22m"
 	Red     color = "\033[31m"
 	Green   color = "\033[32m"
 	Yellow  color = "\033[33m"
@@ -54,7 +54,9 @@ func Log(format string, data ...any) {
 			str += string(Reset)
 		}
 	}
-	print(time.Now().Format("06/01/02 15:04:05"), "   ")
+	if flags.This.RunType.Contains(flags.RunDebug) {
+		print(time.Now().Format("06-01-02 15:04:05   "))
+	}
 	fmt.Printf(str, data...)
 	print("\n")
 }

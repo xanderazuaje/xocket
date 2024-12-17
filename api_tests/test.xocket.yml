@@ -1,40 +1,46 @@
-endpoint: "http://localhost:3000"
+endpoint: "https://pokeapi.co/api/v2"
 tests:
-  - path: "/get/stuff"
+#  - path: "/get/stuff"
+#    name: "get stuff"
+#    params:
+#      query:
+#        - "all"
+#      filter:
+#        - "used"
+#        - "last-40"
+#    method: "POST"
+#    headers:
+#       auth:
+#         - "Bearer $USER_TOKEN"
+#       other:
+#         - "$ENV"
+#       user-agent:
+#         - "<nil>"
+#    form:
+#      name: "name"
+#      other: true
+#      _FILES:
+#        - name: "$PWD/api_tests/test.xocket.yml"
+#    expected:
+#      status: 200
+#      type: "json"
+#      body:
+#        shape: "array-soft:min=1:len=any"
+#        model:
+#          id: "<integer>"
+#          name: "<string:min=10:max=30>"
+#          price: "<float>"
+#          description: "<string:min=50>"
+  - name: "get ditto"
+    method: get
+    path: /pokemon/ditto
     params:
-      query:
-        - "all"
-      filter:
-        - "used"
-        - "last-40"
-    method: "POST"
-    headers:
-       auth:
-         - "Bearer $USER_TOKEN"
-       other:
-         - "$ENV"
-       user-agent:
-         - "<nil>"
-    form:
-      name: "name"
-      other: true
-      _FILES:
-        - name: "$PWD/api_tests/test.xocket.yml"
-    expected:
-      status: 200
-      type: "json"
-      body:
-        shape: "array-soft:min=1:len=any"
-        model:
-          id: "<integer>"
-          object:
-            name: "<string:min=10:max=30>"
-            price: "<float>"
-            description: "<string:min=50>"
-  - params:
       get:
-      - 1
+        - <float:min=2:max=33>
+      id:
+        - <integer>
     expected:
       status: 405
       type: "text"
-      content: "<string:r='error: [aA-zZ]\w.*\n'>"
+      body:
+        content: "<string:r='error: [aA-zZ]\\w.*\n'>"

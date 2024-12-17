@@ -2,7 +2,6 @@ package flags
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -39,7 +38,15 @@ func (r *RunTypeArr) Set(value string) error {
 			return errors.New("unsupported run type: " + v)
 		}
 		*r = append(*r, val)
-		fmt.Printf("%+v\n", *r)
 	}
 	return nil
+}
+
+func (r *RunTypeArr) Contains(run RunType) bool {
+	for _, v := range *r {
+		if v == run {
+			return true
+		}
+	}
+	return false
 }

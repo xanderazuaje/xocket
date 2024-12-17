@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetFilter(str string) (*Field, error) {
+func GetFilterField(str string) (*Field, error) {
 	field := Field{}
 	regex := regexp.MustCompile("<[a-z]\\w+(?::[a-z]\\w+=?[-a-z0-9]\\w?|:r='.*')*?>")
 	data := regex.Split(str, -1)
@@ -51,7 +51,7 @@ func setFilterSpecs(specs []string, filter *Filter) error {
 		if filter.Type == "integer" && fmin != math.Trunc(fmin) {
 			return errors.New("decimal values are not valid when argument is 'integer'")
 		}
-		filter.Min = fmin
+		filter.Min = &fmin
 	case "max":
 		fmax, err := strconv.ParseFloat(specs[1], 64)
 		if err != nil {
@@ -63,13 +63,13 @@ func setFilterSpecs(specs []string, filter *Filter) error {
 		if filter.Type == "integer" && fmax != math.Trunc(fmax) {
 			return errors.New("decimal values are not valid when argument is 'integer'")
 		}
-		filter.Max = fmax
+		filter.Max = &fmax
 	case "len":
 		length, err := strconv.Atoi(specs[1])
 		if err != nil {
 			return errors.New("error at: " + specs[1] + " -> " + err.Error())
 		}
-		filter.Len = length
+		filter.Len = &length
 	case "r":
 		r, err := regexp.Compile(specs[1][1 : len(specs[1])-1])
 		if err != nil {

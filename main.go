@@ -5,6 +5,7 @@ import (
 	"github.com/goccy/go-yaml"
 	"github.com/xanderazuaje/xocket/flags"
 	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/run"
 	"io"
 	"log"
 	"os"
@@ -24,7 +25,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	f, _ := parsing.GetFilter("<integer:max=2>")
-	log.Println(f)
-
+	if program.Endpoint == "" {
+		log.Fatal("endpoint is required")
+	}
+	run.All(program)
 }

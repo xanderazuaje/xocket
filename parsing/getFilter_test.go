@@ -7,6 +7,10 @@ import (
 	"testing"
 )
 
+func getValue(f float64) *float64 {
+	return &f
+}
+
 func TestGetFilter(t *testing.T) {
 	testCases := []struct {
 		in   string
@@ -27,7 +31,7 @@ func TestGetFilter(t *testing.T) {
 				Filter: []parsing.Filter{
 					{
 						Type: parsing.FilterInteger,
-						Min:  2,
+						Min:  getValue(2),
 					},
 				}},
 		},
@@ -38,7 +42,7 @@ func TestGetFilter(t *testing.T) {
 				Filter: []parsing.Filter{
 					{
 						Type: parsing.FilterInteger,
-						Min:  -5,
+						Min:  getValue(-5),
 					},
 				}},
 		},
@@ -105,7 +109,7 @@ func TestGetFilter(t *testing.T) {
 		},
 	}
 	for _, tc := range testCases {
-		ret, err := parsing.GetFilter(tc.in)
+		ret, err := parsing.GetFilterField(tc.in)
 		if err != nil {
 			t.Error(err.Error())
 			continue
@@ -122,7 +126,7 @@ func TestGetFilter(t *testing.T) {
 	}
 
 	for _, s := range errorCases {
-		_, err := parsing.GetFilter(s)
+		_, err := parsing.GetFilterField(s)
 		if err == nil {
 			t.Error("invalid syntax not returning an error: ", s)
 			continue

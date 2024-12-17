@@ -12,6 +12,7 @@ type Program struct {
 }
 
 type Test struct {
+	Name     string
 	Path     string
 	Method   string
 	Params   url.Values
@@ -20,16 +21,16 @@ type Test struct {
 }
 
 type ExpectedResponse struct {
-	Status  int
-	Type    ExpectedType
-	Body    *ExpectedBody
-	Content string
+	Status int
+	Type   ExpectedType
+	Body   *ExpectedBody
 }
 
 type ExpectedBody struct {
 	RawShape string        `yaml:"shape"`
 	Shape    ExpectedShape `yaml:"-"`
 	Filter   string        `yaml:"-"`
+	Content  string
 	Model    map[string]interface{}
 }
 
@@ -40,8 +41,8 @@ type Field struct {
 
 type Filter struct {
 	Type  FilterType
-	Min   float64
-	Max   float64
-	Len   int
+	Min   *float64
+	Max   *float64
+	Len   *int
 	Regex *regexp.Regexp
 }
