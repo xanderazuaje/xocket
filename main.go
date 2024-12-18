@@ -11,6 +11,8 @@ import (
 	"os"
 )
 
+var ExitCode = 0
+
 func main() {
 	flag.Parse()
 	flags.ValidateFlags()
@@ -29,4 +31,5 @@ func main() {
 		log.Fatal("endpoint is required")
 	}
 	run.All(program)
+	os.Exit(ExitCode)
 }

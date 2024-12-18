@@ -55,8 +55,8 @@ func Log(format string, data ...any) {
 		}
 	}
 	if flags.This.RunType.Contains(flags.RunDebug) {
-		print(time.Now().Format("06-01-02 15:04:05   "))
+		fmt.Print(time.Now().Format("06-01-02 15:04:05   "))
 	}
 	fmt.Printf(str, data...)
-	print("\n")
+	fmt.Print("\n")
 }

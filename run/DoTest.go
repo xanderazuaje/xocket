@@ -23,17 +23,14 @@ func DoTest(test parsing.Test, endpoint string) (err error) {
 	if err != nil {
 		return err
 	}
-	if res.StatusCode < 600 && res.StatusCode >= 400 {
-		colors.Log("@*r(STATUS:) %s", res.Status)
-	} else {
-		colors.Log("@*g(STATUS:) %d - %s", res.StatusCode, res.Status)
-	}
+	colors.Log("@*b(STATUS:) %d - %s", res.StatusCode, res.Status)
 	if flags.This.RunType.Contains(flags.RunDebug) {
 		err := printDebugInfo(res)
 		if err != nil {
 			return err
 		}
 	}
+	compareResponse(res, test.Expected)
 	return nil
 }
 
@@ -45,7 +42,7 @@ func setRequest(test parsing.Test, endpoint string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
-	test.Headers, err = expandMap(test.Headers)
+	test.Header, err = expandMap(test.Header)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +52,7 @@ func setRequest(test parsing.Test, endpoint string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header = test.Headers
+	req.Header = test.Header
 	req.URL.RawQuery = test.Params.Encode()
 	return req, nil
 }
@@ -72,15 +69,21 @@ func printDebugInfo(res *http.Response) error {
 		for _, v := range cookies {
 			colors.Log("   - %s", v.String())
 		}
+	} else {
+		colors.Log("@*b(COOKIES:) none")
 	}
 	//print body
 	var body []byte
 	body, err := io.ReadAll(res.Body)
-	var indentedJson bytes.Buffer
-	err = json.Indent(&indentedJson, body, "", "   ")
-	if err != nil {
-		return err
+	if json.Valid(body) {
+		var indentedJson bytes.Buffer
+		err = json.Indent(&indentedJson, body, "", "   ")
+		if err != nil {
+			return err
+		}
+		colors.Log("@*b(BODY (json):)\n%+v", indentedJson.String())
+	} else {
+		colors.Log("@*b(BODY:)\n%+v", body)
 	}
-	colors.Log("@*b(BODY:)\n%+v", indentedJson.String())
 	return nil
 }

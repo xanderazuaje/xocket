@@ -1,6 +1,7 @@
 package parsing
 
 import (
+	"crypto/tls"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -16,22 +17,26 @@ type Test struct {
 	Path     string
 	Method   string
 	Params   url.Values
-	Headers  http.Header
+	Header   http.Header
 	Expected *ExpectedResponse
 }
 
 type ExpectedResponse struct {
-	Status int
-	Type   ExpectedType
-	Body   *ExpectedBody
-}
-
-type ExpectedBody struct {
-	RawShape string        `yaml:"shape"`
-	Shape    ExpectedShape `yaml:"-"`
-	Filter   string        `yaml:"-"`
-	Content  string
-	Model    map[string]interface{}
+	Status           string
+	StatusCode       int `yaml:"status-code"`
+	Proto            string
+	ProtoMajor       *int `yaml:"proto-major"`
+	ProtoMinor       *int `yaml:"proto-minor"`
+	Cookies          []*ExpectedCookie
+	Header           http.Header
+	Body             any
+	ContentLength    *int64   `yaml:"content-length"`
+	TransferEncoding []string `yaml:"transfer-encoding"`
+	Close            *bool
+	Uncompressed     *bool
+	Trailer          http.Header
+	Request          *http.Request
+	TLS              *tls.ConnectionState
 }
 
 type Field struct {
