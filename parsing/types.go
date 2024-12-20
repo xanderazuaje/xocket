@@ -2,6 +2,7 @@ package parsing
 
 import (
 	"crypto/tls"
+	"errors"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -21,6 +22,32 @@ type Test struct {
 	Expected *ExpectedResponse
 }
 
+type BodyType string
+
+const (
+	BodyJson   BodyType = "json"
+	BodyXML    BodyType = "xml"
+	BodyHTML   BodyType = "html"
+	BodyString BodyType = "string"
+)
+
+var bodyMap = map[BodyType]struct{}{
+	BodyJson:   {},
+	BodyXML:    {},
+	BodyHTML:   {},
+	BodyString: {},
+}
+
+// TODO: make this stuff work
+func (b *BodyType) UnmarshalYaml(s []byte) error {
+	_, ok := bodyMap[BodyType(s)]
+	if ok == false {
+		return errors.New("invalid body type expected")
+	}
+	*b = BodyType(s)
+	return nil
+}
+
 type ExpectedResponse struct {
 	Status           string
 	StatusCode       int `yaml:"status-code"`
@@ -30,6 +57,7 @@ type ExpectedResponse struct {
 	Cookies          []*ExpectedCookie
 	Header           http.Header
 	Body             any
+	BodyType         BodyType `yaml:"body-type"`
 	ContentLength    *int64   `yaml:"content-length"`
 	TransferEncoding []string `yaml:"transfer-encoding"`
 	Close            *bool

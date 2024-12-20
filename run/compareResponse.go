@@ -1,11 +1,15 @@
 package run
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/xanderazuaje/xocket/colors"
 	"github.com/xanderazuaje/xocket/flags"
 	"github.com/xanderazuaje/xocket/parsing"
+	"io"
+	"log"
 	"net/http"
+	"reflect"
 	"strings"
 )
 
@@ -56,19 +60,34 @@ func compareResponse(res *http.Response, exp *parsing.ExpectedResponse) (ok bool
 		printIntComparison(&ok, "proto minor", *exp.ProtoMinor, res.ProtoMinor)
 	}
 	if len(exp.Cookies) > 0 {
-		ok = compareCookies(res, exp)
+		compareCookies(res, exp, &ok)
 	}
 	if len(exp.Header) > 0 {
-		for k, v := range exp.Header {
-			for i := range v {
-				if res.Header[k][i] != v[i] {
-					colors.Log("@r*(HEADER MISMATCH:) %s", k)
-					printStrArrDiff(res.Header[k], v)
-					ok = false
-					break
-				}
-			}
+		compareHeader(res, exp, &ok)
+	}
+	if exp.Body != nil {
+		var body []byte
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			log.Fatal(err.Error())
 		}
+		var resBody interface{}
+		err = json.Unmarshal(body, resBody)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		if !reflect.DeepEqual(exp.Body, resBody) {
+			ok = false
+			colors.Log("@b*(BODY:) @r*(DIFF)")
+			colors.Log("@b(Expected:)")
+			resJson, err := json.MarshalIndent(exp.Body, "", "\t")
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+			fmt.Println(resJson)
+			fmt.Println(body)
+		}
+		fmt.Println(res.Body)
 	}
 	if ok {
 		colors.Log("test @g(OK)")
@@ -79,12 +98,30 @@ func compareResponse(res *http.Response, exp *parsing.ExpectedResponse) (ok bool
 	return ok
 }
 
-func compareCookies(res *http.Response, exp *parsing.ExpectedResponse) bool {
-	var ok bool
+func compareHeader(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
+	for k, v := range exp.Header {
+		for i := range v {
+			if len(res.Header[k]) != len(v) {
+				colors.Log("@r*(HEADER MISMATCH:) %s", k)
+				printStrArrDiff(res.Header[k], v)
+				*ok = false
+				break
+			}
+			if res.Header[k][i] != v[i] {
+				colors.Log("@r*(HEADER MISMATCH:) %s", k)
+				printStrArrDiff(res.Header[k], v)
+				*ok = false
+				break
+			}
+		}
+	}
+}
+
+func compareCookies(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
 	resCookies := res.Cookies()
 	if len(resCookies) == 0 {
 		colors.Log("@b*(COOKIES:) @r(ERROR) - response has no cookies")
-		ok = false
+		*ok = false
 	} else {
 		cookiesMap := map[string]*http.Cookie{}
 		for _, c := range resCookies {
@@ -92,10 +129,9 @@ func compareCookies(res *http.Response, exp *parsing.ExpectedResponse) bool {
 		}
 		for i, c := range exp.Cookies {
 			rc := cookiesMap[c.Name]
-			ok = c.PrintDifference(i, rc)
+			*ok = c.PrintDifference(i, rc)
 		}
 	}
-	return ok
 }
 
 func printStrArrDiff(sa1, sa2 []string) {
@@ -112,7 +148,6 @@ func printStrArrDiff(sa1, sa2 []string) {
 			strA1[i] = v
 			strA2[i] = sa2[i]
 		}
-		str += " "
 	}
 	if sa1len > sa2len {
 		s := sa1[sa2len:]

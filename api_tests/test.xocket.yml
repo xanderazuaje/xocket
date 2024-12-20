@@ -22,9 +22,9 @@ tests:
       _FILES:
         - name: "$PWD/api_tests/test.xocket.yml"
     expected:
-        cookies:
-          - name: "hola"
-            expires: 2003-12-2 12:12:12
+        header:
+          Content-Type:
+            - "text/html; charset=utf-8"
         body:
           id: "<integer>"
           name: "<string:min=10:max=30>"
@@ -41,6 +41,7 @@ tests:
     expected:
       status-code: 200
       type: "text"
+      body-type: aaaa
       body:
         - content: "<string:r='error: [aA-zZ]\\w.*\n'>"
         - content: "hola"
