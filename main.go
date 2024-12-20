@@ -30,6 +30,9 @@ func main() {
 	if program.Endpoint == "" {
 		log.Fatal("endpoint is required")
 	}
-	run.All(program)
+	ok := run.All(program)
+	if !ok {
+		ExitCode = 1
+	}
 	os.Exit(ExitCode)
 }

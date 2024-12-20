@@ -6,7 +6,8 @@ import (
 	"strconv"
 )
 
-func All(program parsing.Program) {
+func All(program parsing.Program) (ok bool) {
+	ok = true
 	for i, test := range program.Tests {
 		if test.Path == "" {
 			requiredProperty(i, "path", &test)
@@ -14,11 +15,15 @@ func All(program parsing.Program) {
 		if test.Method == "" {
 			requiredProperty(i, "method", &test)
 		}
-		err := DoTest(test, program.Endpoint)
+		err, tOk := DoTest(test, program.Endpoint)
 		if err != nil {
 			log.Fatal(err)
 		}
+		if !tOk {
+			ok = false
+		}
 	}
+	return ok
 }
 
 func requiredProperty(i int, p string, test *parsing.Test) {
