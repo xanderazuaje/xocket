@@ -39,10 +39,10 @@ var bodyMap = map[BodyType]struct{}{
 }
 
 // TODO: make this stuff work
-func (b *BodyType) UnmarshalYaml(s []byte) error {
+func (b *BodyType) UnmarshalYAML(s []byte) error {
 	_, ok := bodyMap[BodyType(s)]
 	if ok == false {
-		return errors.New("invalid body type expected")
+		return errors.New("invalid body-type property")
 	}
 	*b = BodyType(s)
 	return nil

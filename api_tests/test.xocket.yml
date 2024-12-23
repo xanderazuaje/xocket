@@ -40,8 +40,5 @@ tests:
         - <integer>
     expected:
       status-code: 200
-      type: "text"
-      body-type: aaaa
-      body:
-        - content: "<string:r='error: [aA-zZ]\\w.*\n'>"
-        - content: "hola"
+      body-type: html
+      body: "<div></div>"

@@ -1,2 +1,4 @@
 github.com/goccy/go-yaml v1.15.8 h1:0UhHxTWCcHQh4lZPIOdKY0ENpuBTAnx4n0L07VnbFag=
 github.com/goccy/go-yaml v1.15.8/go.mod h1:XBurs7gK8ATbW4ZPGKgcbrY1Br56PdM69F7LkFRi1kA=
+golang.org/x/net v0.33.0 h1:74SYHlV8BIgHIFC/LrYkOGIwL19eTYXQ5wc6TBuO36I=
+golang.org/x/net v0.33.0/go.mod h1:HXLR5J+9DxmrqMwG9qjGCxZ+zKXxBru04zlTvWlWuN4=
