@@ -1,44 +1,18 @@
-endpoint: "https://pokeapi.co/api/v2"
+endpoint: "http://localhost:8000"
 tests:
-  - path: "/get/stuff"
-    name: "get stuff"
-    params:
-      query:
-        - "all"
-      filter:
-        - "used"
-        - "last-40"
+  - path: "/api/user"
     method: "POST"
-    header:
-       auth:
-         - "Bearer $USER_TOKEN"
-       other:
-         - "$ENV"
-       user-agent:
-         - "<nil>"
+    name: "Create user"
     form:
-      name: "name"
-      other: true
-      _FILES:
-        - name: "$PWD/api_tests/test.xocket.yml"
+      type: urlencoded
+      values:
+        name:
+          - hola
+        password:
+          - hola
+        email:
+          - hola+1@hola.com
     expected:
-        header:
-          Content-Type:
-            - "text/html; charset=utf-8"
-        body:
-          id: "<integer>"
-          name: "<string:min=10:max=30>"
-          price: "<float>"
-          description: "<string:min=50>"
-  - name: "get ditto"
-    method: get
-    path: /pokemon/ditto
-    params:
-      get:
-        - <float:min=2:max=33>
-      id:
-        - <integer>
-    expected:
-      status-code: 200
-      body-type: html
-      body: "<div></div>"
+        statusCode: 201
+        body-type: string
+        body: ""

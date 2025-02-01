@@ -3,6 +3,7 @@ package parsing
 import (
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -19,7 +20,20 @@ type Test struct {
 	Method   string
 	Params   url.Values
 	Header   http.Header
+	Form     *Form
 	Expected *ExpectedResponse
+}
+
+type Form struct {
+	Type   string
+	Values url.Values
+	Files  map[string]string `yaml:"_FILES"`
+}
+
+func (f *Form) MarshallYAML(b []string) error {
+	fmt.Println(b)
+
+	return nil
 }
 
 type BodyType string
@@ -38,7 +52,6 @@ var bodyMap = map[BodyType]struct{}{
 	BodyString: {},
 }
 
-// TODO: make this stuff work
 func (b *BodyType) UnmarshalYAML(s []byte) error {
 	_, ok := bodyMap[BodyType(s)]
 	if ok == false {

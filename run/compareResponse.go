@@ -3,16 +3,15 @@ package run
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"github.com/xanderazuaje/xocket/colors"
 	"github.com/xanderazuaje/xocket/flags"
 	"github.com/xanderazuaje/xocket/parsing"
-	"golang.org/x/net/html"
 	"io"
 	"log"
 	"net/http"
 	"reflect"
-	"strings"
 )
 
 func compareResponse(res *http.Response, exp *parsing.ExpectedResponse) (ok bool) {
@@ -51,7 +50,6 @@ func compareResponse(res *http.Response, exp *parsing.ExpectedResponse) (ok bool
 }
 
 func bodyDiff(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
-	var bodyRaw []byte
 	bodyRaw, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -60,39 +58,52 @@ func bodyDiff(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
 	case parsing.BodyJson:
 		jsonDiff(bodyRaw, exp, ok)
 	case parsing.BodyString:
-		expStr, ok2 := exp.Body.(string)
-		if !ok2 {
-			colors.Log("@r*(ERROR:) Test body type don't match")
-			*ok = false
-		} else if expStr != string(bodyRaw) {
-			colors.Log("@b*(BODY:) @r*(DIFF)")
-			colors.Log("@b*(EXPECTED:) %s", expStr)
-			colors.Log("@b*(GOT:) %s", bodyRaw)
-			*ok = false
-		}
+		ok = stringDiff(exp, ok, bodyRaw)
 	case parsing.BodyHTML:
-		//TODO: check if are the same
-		hasHTML := false
-		t := html.NewTokenizer(strings.NewReader(string(bodyRaw)))
-		for {
-			tt := t.Next()
-			if tt == html.ErrorToken {
-				err := t.Err()
-				if err != nil && err.Error() == "EOF" {
-					if !hasHTML {
-						*ok = false
-						colors.Log("@b*(BODY:) @r*(ERROR) not a valid html")
-					}
-					break
-				}
-			} else if tt == html.StartTagToken ||
-				tt == html.EndTagToken ||
-				tt == html.SelfClosingTagToken {
-				hasHTML = true
-			}
-		}
+		tagDiff(bodyRaw, ok, exp, "html")
 	case parsing.BodyXML:
-		//TODO: check if are the same
+		tagDiff(bodyRaw, ok, exp, "xml")
+	}
+}
+
+func stringDiff(exp *parsing.ExpectedResponse, ok *bool, bodyRaw []byte) *bool {
+	expStr, ok2 := exp.Body.(string)
+	if !ok2 {
+		colors.Log("@r*(ERROR:) Test body type don't match")
+		*ok = false
+	} else if expStr != string(bodyRaw) {
+		colors.Log("@b*(BODY:) @r*(DIFF)")
+		colors.Log("@b*(EXPECTED:) %s", expStr)
+		colors.Log("@b*(GOT:) %s", bodyRaw)
+		*ok = false
+	}
+	return ok
+}
+
+func tagDiff(bodyRaw []byte, ok *bool, exp *parsing.ExpectedResponse, format string) {
+	var resBody any
+	if err := xml.Unmarshal(bodyRaw, &resBody); err != nil {
+		colors.Log("@b*(BODY:) @r*(ERROR) response's body is not a valid html")
+		*ok = false
+		return
+	}
+	if !reflect.DeepEqual(exp.Body, resBody) {
+		*ok = false
+		colors.Log("@b*(BODY:) @r*(DIFF)")
+		if flags.This.RunType.Contains(flags.RunDebug) {
+			colors.Log("@b*(EXPECTED:)")
+		} else {
+			colors.Log("Expected %s and received %s @*r(doesn't) match", format, format)
+		}
+		// Printing expected body
+		if flags.This.RunType.Contains(flags.RunDebug) {
+			str, err := xml.Marshal(exp.Body)
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+			colors.Log("@b*(GOT:)")
+			fmt.Println(str)
+		}
 	}
 }
 
@@ -106,23 +117,29 @@ func jsonDiff(bodyRaw []byte, exp *parsing.ExpectedResponse, ok *bool) {
 		if !reflect.DeepEqual(exp.Body, resBody) {
 			*ok = false
 			colors.Log("@b*(BODY:) @r*(DIFF)")
-			colors.Log("@b*(EXPECTED:)")
-			var buff bytes.Buffer
-			encoder := json.NewEncoder(&buff)
-			encoder.SetEscapeHTML(false)
-			encoder.SetIndent("", "  ")
-			err := encoder.Encode(exp.Body)
-			if err != nil {
-				log.Fatal(err.Error())
+			if flags.This.RunType.Contains(flags.RunDebug) {
+				colors.Log("@b*(EXPECTED:)")
+			} else {
+				colors.Log("expected json and received json @*r(doesn't) match")
 			}
-			fmt.Println(buff.String())
-			colors.Log("@b*(GOT:)")
-			buff.Reset()
-			err = json.Indent(&buff, bodyRaw, "", "  ")
-			if err != nil {
-				log.Fatal(err.Error())
+			// Printing expected body
+			if flags.This.RunType.Contains(flags.RunDebug) {
+				var buff bytes.Buffer
+				encoder := json.NewEncoder(&buff)
+				encoder.SetEscapeHTML(false)
+				encoder.SetIndent("", "  ")
+				err := encoder.Encode(exp.Body)
+				if err != nil {
+					log.Fatal(err.Error())
+				}
+				colors.Log("@b*(GOT:)")
+				buff.Reset()
+				err = json.Indent(&buff, bodyRaw, "", "  ")
+				if err != nil {
+					log.Fatal(err.Error())
+				}
+				fmt.Println(buff.String())
 			}
-			fmt.Println(buff.String())
 		}
 	} else {
 		colors.Log("@b*(BODY:) @r*(DIFF)")

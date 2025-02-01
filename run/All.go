@@ -15,6 +15,12 @@ func All(program parsing.Program) (ok bool) {
 		if test.Method == "" {
 			requiredProperty(i, "method", &test)
 		}
+		if test.Form != nil && (test.Form.Type != "multipart" && test.Form.Type != "urlencoded") {
+			if test.Name != "" {
+				log.Fatal("invalid form type executing '" + test.Name + "', only 'multipart' or 'urlencoded' is valid")
+			}
+			log.Fatal("invalid form type executing test number " + strconv.Itoa(i+1) + ", only 'multipart' or 'urlencoded' is valid")
+		}
 		err, tOk := DoTest(test, program.Endpoint)
 		if err != nil {
 			log.Fatal(err)

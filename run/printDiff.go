@@ -21,7 +21,6 @@ func printStringDiff(isOk *bool, name, s1, s2 string) {
 	} else if flags.This.RunType.Contains(flags.RunDebug) {
 		colors.Log("@b(%s) - @g*(OK!)", name)
 	}
-	*isOk = true
 }
 
 func printIntDiff(isOk *bool, name string, d1, d2 int) {
@@ -36,7 +35,6 @@ func printIntDiff(isOk *bool, name string, d1, d2 int) {
 	} else if flags.This.RunType.Contains(flags.RunDebug) {
 		colors.Log("@b(%s) - @g*(OK!)", name)
 	}
-	*isOk = true
 }
 
 func headerDiff(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
