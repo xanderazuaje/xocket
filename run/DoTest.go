@@ -1,7 +1,9 @@
 package run
 
 import (
+	"fmt"
 	"github.com/xanderazuaje/xocket/colors"
+	"github.com/xanderazuaje/xocket/diffPrint"
 	"github.com/xanderazuaje/xocket/flags"
 	"github.com/xanderazuaje/xocket/parsing"
 	"net/http"
@@ -27,4 +29,15 @@ func DoTest(test parsing.Test, endpoint string) (err error, ok bool) {
 	}
 	ok = compareResponse(res, test.Expected)
 	return nil, ok
+}
+
+func compareResponse(res *http.Response, exp *parsing.ExpectedResponse) bool {
+	ok := diffPrint.PrintHttpDiff(res, exp)
+	if ok {
+		colors.Log("test @g(OK)")
+	} else {
+		colors.Log("test @r(ERROR)")
+	}
+	fmt.Println("----------------------------")
+	return ok
 }

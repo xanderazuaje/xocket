@@ -25,7 +25,6 @@ func AddFormData(test *parsing.Test, body *bytes.Buffer) error {
 		}
 		test.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
-
 	return nil
 }
 
@@ -45,11 +44,11 @@ func setMultipart(test *parsing.Test, body *bytes.Buffer) error {
 		if err != nil {
 			return err
 		}
-		defer fileData.Close()
 		_, err = io.Copy(fw, fileData)
 		if err != nil {
 			return err
 		}
+		fileData.Close()
 	}
 	err := w.Close()
 	if err != nil {
