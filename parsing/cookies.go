@@ -26,7 +26,7 @@ type ExpectedCookie struct {
 
 func printPropertyDiff(count int, k, v1, v2 string) {
 	colors.Log(
-		"\t\t@r*(DIFF) at cookie[%d]\n\t\t\tkey @b*(%s)\n\t\t\texpected -> %s\n\t\t\tgot -> %s",
+		"\t@r*(DIFF) at cookie[%d]\n\t\tkey @b*(%s)\n\t\texpected -> %s\n\t\tgot -> %s",
 		count,
 		k,
 		v1,
@@ -36,12 +36,16 @@ func printPropertyDiff(count int, k, v1, v2 string) {
 
 func (c *ExpectedCookie) PrintDifference(count int, rc *http.Cookie) bool {
 	ok := true
+	if rc == nil {
+		colors.Log("\t@r*(DIFF) cookie named '%s' doesn't exist in response\n", c.Name)
+		return false
+	}
 	if c.Name != rc.Name {
 		printPropertyDiff(count, "name", c.Name, rc.Name)
 		ok = false
 	}
 	if c.Value != "" && c.Value != rc.Value {
-		printPropertyDiff(count, "value", c.Value, rc.Name)
+		printPropertyDiff(count, "value", c.Value, rc.Value)
 		ok = false
 	}
 	if c.Path != "" && c.Path != rc.Path {

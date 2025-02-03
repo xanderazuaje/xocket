@@ -21,6 +21,9 @@ func setRequest(test parsing.Test, endpoint string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+	for _, c := range test.Cookies {
+		c.Value = os.ExpandEnv(c.Value)
+	}
 	infoStr := setLinePrompt(test, endpoint)
 	colors.Log(infoStr)
 	var b bytes.Buffer
@@ -38,5 +41,8 @@ func setRequest(test parsing.Test, endpoint string) (*http.Request, error) {
 		req.Header = test.Header
 	}
 	req.URL.RawQuery = test.Params.Encode()
+	for _, c := range test.Cookies {
+		req.AddCookie(c)
+	}
 	return req, nil
 }

@@ -13,6 +13,6 @@ tests:
         email:
           - hola+1@hola.com
     expected:
-        statusCode: 201
+        status-code: 201
         body-type: string
         body: ""

@@ -16,6 +16,7 @@ type Program struct {
 
 type Test struct {
 	Name     string
+	Cookies  []*http.Cookie
 	Path     string
 	Method   string
 	Params   url.Values
