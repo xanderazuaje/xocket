@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/cookiejar"
+	"net/url"
 	"sync"
 )
 
@@ -16,6 +17,7 @@ type ProgramJar struct {
 
 func (j *ProgramJar) GetJar() *cookiejar.Jar {
 	client := http.Client{}
+	u, _ := url.Parse("http://0.0.0.0")
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		log.Fatal("failed to create cookie jar:", err.Error())
@@ -23,25 +25,24 @@ func (j *ProgramJar) GetJar() *cookiejar.Jar {
 	colors.Log("@*g(GETTING COOKIES...)")
 	var wg sync.WaitGroup
 	stdout := make(chan string)
-	var totalCalls int
 	for _, oven := range j.Oven {
-		totalCalls++
-		wg.Add(totalCalls)
-		go oven.RequestCookie(jar, client, &wg, stdout)
+		wg.Add(1)
+		go oven.RequestCookie(jar, u, client, &wg, stdout)
 	}
 	go func() {
 		for {
 			select {
-			case str := <-stdout:
-				fmt.Println(str)
-				totalCalls--
-				if totalCalls == 0 {
-					return
+			case str, ok := <-stdout:
+				if !ok {
+					break
 				}
+				fmt.Println(str)
 			}
 		}
 	}()
 	wg.Wait()
+	close(stdout)
 	client.CloseIdleConnections()
+	jar.SetCookies(u, j.Cookies)
 	return jar
 }

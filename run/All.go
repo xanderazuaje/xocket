@@ -12,7 +12,6 @@ func All(program types.Program) (ok bool) {
 	var jar *cookiejar.Jar
 	if program.CookieJar != nil {
 		jar = program.CookieJar.GetJar()
-		jar.SetCookies(nil, program.CookieJar.Cookies)
 	}
 	//Do each test
 	for i, test := range program.Tests {

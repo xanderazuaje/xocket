@@ -19,7 +19,7 @@ type CookieOven struct {
 	Form    *Form
 }
 
-func (oven *CookieOven) RequestCookie(jar *cookiejar.Jar, client http.Client, wg *sync.WaitGroup, stdout chan<- string) {
+func (oven *CookieOven) RequestCookie(jar *cookiejar.Jar, u *url.URL, client http.Client, wg *sync.WaitGroup, stdout chan<- string) {
 	defer wg.Done()
 	var requestName string
 	if oven.Name != "" {
@@ -56,5 +56,5 @@ func (oven *CookieOven) RequestCookie(jar *cookiejar.Jar, client http.Client, wg
 	} else {
 		stdout <- colors.Sprintf("@*g(SUCCESS:) %s", requestName)
 	}
-	jar.SetCookies(nil, res.Cookies())
+	jar.SetCookies(u, res.Cookies())
 }
