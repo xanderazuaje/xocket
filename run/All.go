@@ -11,7 +11,7 @@ func All(program types.Program) (ok bool) {
 	ok = true
 	var jar *cookiejar.Jar
 	if program.CookieJar != nil {
-		jar = program.CookieJar.GetJar()
+		jar = program.CookieJar.FillJar()
 	}
 	//Do each test
 	for i, test := range program.Tests {

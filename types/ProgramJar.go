@@ -15,7 +15,7 @@ type ProgramJar struct {
 	Cookies []*http.Cookie
 }
 
-func (j *ProgramJar) GetJar() *cookiejar.Jar {
+func (j *ProgramJar) FillJar() *cookiejar.Jar {
 	client := http.Client{}
 	u, _ := url.Parse("http://0.0.0.0")
 	jar, err := cookiejar.New(nil)
