@@ -1,25 +1,25 @@
 package diffPrint
 
 import (
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"io"
 	"log"
 	"net/http"
 )
 
-func BodyDiff(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
+func BodyDiff(res *http.Response, exp *types.ExpectedResponse, ok *bool) {
 	bodyRaw, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	switch exp.BodyType {
-	case parsing.BodyJson:
+	case types.BodyJson:
 		jsonDiff(bodyRaw, exp, ok)
-	case parsing.BodyString:
+	case types.BodyString:
 		ok = bodyStringDiff(exp, ok, bodyRaw)
-	case parsing.BodyHTML:
+	case types.BodyHTML:
 		tagDiff(bodyRaw, ok, exp, "html")
-	case parsing.BodyXML:
+	case types.BodyXML:
 		tagDiff(bodyRaw, ok, exp, "xml")
 	}
 }

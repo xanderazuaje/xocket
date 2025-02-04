@@ -2,23 +2,24 @@ package parsing
 
 import (
 	"errors"
+	"github.com/xanderazuaje/xocket/types"
 	"math"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-func GetFilterField(str string) (*Field, error) {
-	field := Field{}
+func GetFilterField(str string) (*types.Field, error) {
+	field := types.Field{}
 	regex := regexp.MustCompile("<[a-z]\\w+(?::[a-z]\\w+=?[-a-z0-9]\\w?|:r='.*')*?>")
 	data := regex.Split(str, -1)
 	field.Data = data
 	filterStrs := regex.FindAllString(str, -1)
 	for _, v := range filterStrs {
-		var filter Filter
+		var filter types.Filter
 		v = strings.Trim(v, "<>")
 		sets := strings.Split(v, ":")
-		filter.Type = FilterType(sets[0])
+		filter.Type = types.FilterType(sets[0])
 		if !filter.Type.IsValid() {
 			return nil, errors.New("invalid filter type: " + v)
 		}
@@ -38,7 +39,7 @@ func GetFilterField(str string) (*Field, error) {
 	return &field, nil
 }
 
-func setFilterSpecs(specs []string, filter *Filter) error {
+func setFilterSpecs(specs []string, filter *types.Filter) error {
 	switch specs[0] {
 	case "min":
 		fmin, err := strconv.ParseFloat(specs[1], 64)

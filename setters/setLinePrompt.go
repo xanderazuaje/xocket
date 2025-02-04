@@ -1,12 +1,12 @@
-package run
+package setters
 
 import (
 	"fmt"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"strings"
 )
 
-func setLinePrompt(test parsing.Test, endpoint string) string {
+func setLinePrompt(test types.Test, endpoint string) string {
 	var infoStr string
 	if test.Name != "" {
 		infoStr = strings.Join([]string{

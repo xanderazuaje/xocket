@@ -2,11 +2,11 @@ package diffPrint
 
 import (
 	"github.com/xanderazuaje/xocket/colors"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"net/http"
 )
 
-func headerDiff(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
+func headerDiff(res *http.Response, exp *types.ExpectedResponse, ok *bool) {
 	for k, v := range exp.Header {
 		for i := range v {
 			if len(res.Header[k]) != len(v) {

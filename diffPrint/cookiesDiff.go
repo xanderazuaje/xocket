@@ -2,11 +2,11 @@ package diffPrint
 
 import (
 	"github.com/xanderazuaje/xocket/colors"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"net/http"
 )
 
-func cookiesDiff(res *http.Response, exp *parsing.ExpectedResponse, ok *bool) {
+func cookiesDiff(res *http.Response, exp *types.ExpectedResponse, ok *bool) {
 	resCookies := res.Cookies()
 	if len(resCookies) == 0 {
 		colors.Log("@b*(COOKIES:) @r(ERROR) - response has no cookies")

@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"github.com/xanderazuaje/xocket/colors"
 	"github.com/xanderazuaje/xocket/flags"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"log"
 	"reflect"
 )
 
-func jsonDiff(bodyRaw []byte, exp *parsing.ExpectedResponse, ok *bool) {
+func jsonDiff(bodyRaw []byte, exp *types.ExpectedResponse, ok *bool) {
 	if json.Valid(bodyRaw) {
 		var resBody interface{}
 		err := json.Unmarshal(bodyRaw, &resBody)

@@ -1,4 +1,4 @@
-package parsing
+package types
 
 import (
 	"github.com/xanderazuaje/xocket/colors"

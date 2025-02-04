@@ -1,40 +1,29 @@
-package parsing
+package types
 
 import (
 	"crypto/tls"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
 )
 
 type Program struct {
-	Endpoint string
-	Tests    []Test
+	Endpoint  string
+	CookieJar *ProgramJar `yaml:"cookie-jar"`
+	Tests     []Test
 }
 
 type Test struct {
-	Name     string
-	Cookies  []*http.Cookie
-	Path     string
-	Method   string
-	Params   url.Values
-	Header   http.Header
-	Form     *Form
-	Expected *ExpectedResponse
-}
-
-type Form struct {
-	Type   string
-	Values url.Values
-	Files  map[string]string `yaml:"_FILES"`
-}
-
-func (f *Form) MarshallYAML(b []string) error {
-	fmt.Println(b)
-
-	return nil
+	Name            string
+	Cookies         []*http.Cookie
+	Path            string
+	Method          string
+	Params          url.Values
+	Header          http.Header
+	Form            *Form
+	Expected        *ExpectedResponse
+	IgnoreCookieJar bool
 }
 
 type BodyType string

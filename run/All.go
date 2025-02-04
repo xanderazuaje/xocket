@@ -1,13 +1,20 @@
 package run
 
 import (
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"log"
+	"net/http/cookiejar"
 	"strconv"
 )
 
-func All(program parsing.Program) (ok bool) {
+func All(program types.Program) (ok bool) {
 	ok = true
+	var jar *cookiejar.Jar
+	if program.CookieJar != nil {
+		jar = program.CookieJar.GetJar()
+		jar.SetCookies(nil, program.CookieJar.Cookies)
+	}
+	//Do each test
 	for i, test := range program.Tests {
 		if test.Path == "" {
 			requiredProperty(i, "path", &test)
@@ -21,7 +28,10 @@ func All(program parsing.Program) (ok bool) {
 			}
 			log.Fatal("invalid form type executing test number " + strconv.Itoa(i+1) + ", only 'multipart' or 'urlencoded' is valid")
 		}
-		err, tOk := DoTest(test, program.Endpoint)
+		if !test.IgnoreCookieJar && program.CookieJar != nil {
+			test.Cookies = append(test.Cookies, program.CookieJar.Cookies...)
+		}
+		err, tOk := DoTest(test, program.Endpoint, jar)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -32,7 +42,7 @@ func All(program parsing.Program) (ok bool) {
 	return ok
 }
 
-func requiredProperty(i int, p string, test *parsing.Test) {
+func requiredProperty(i int, p string, test *types.Test) {
 	if test.Name != "" {
 		log.Fatal(p + " is required for executing '" + test.Name + "'")
 	}

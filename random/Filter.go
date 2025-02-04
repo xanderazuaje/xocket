@@ -1,17 +1,17 @@
 package random
 
 import (
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"strconv"
 )
 
-func Filter(filter *parsing.Filter) string {
+func Filter(filter *types.Filter) string {
 	switch filter.Type {
-	case parsing.FilterString:
+	case types.FilterString:
 		return String(filter)
-	case parsing.FilterInteger:
+	case types.FilterInteger:
 		return strconv.Itoa(Integer(filter))
-	case parsing.FilterFloat:
+	case types.FilterFloat:
 		return strconv.FormatFloat(Float(filter), 'f', -1, 64)
 	}
 	return ""

@@ -2,10 +2,10 @@ package diffPrint
 
 import (
 	"github.com/xanderazuaje/xocket/colors"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 )
 
-func bodyStringDiff(exp *parsing.ExpectedResponse, ok *bool, bodyRaw []byte) *bool {
+func bodyStringDiff(exp *types.ExpectedResponse, ok *bool, bodyRaw []byte) *bool {
 	expStr, ok2 := exp.Body.(string)
 	if !ok2 {
 		colors.Log("@r*(ERROR:) Test body type don't match")

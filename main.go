@@ -4,8 +4,8 @@ import (
 	"flag"
 	"github.com/goccy/go-yaml"
 	"github.com/xanderazuaje/xocket/flags"
-	"github.com/xanderazuaje/xocket/parsing"
 	"github.com/xanderazuaje/xocket/run"
+	"github.com/xanderazuaje/xocket/types"
 	"io"
 	"log"
 	"os"
@@ -22,7 +22,7 @@ func main() {
 	}
 	raw, err := io.ReadAll(file)
 	_ = file.Close()
-	var program parsing.Program
+	var program types.Program
 	err = yaml.Unmarshal(raw, &program)
 	if err != nil {
 		log.Fatal(err.Error())

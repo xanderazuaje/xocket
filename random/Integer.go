@@ -2,11 +2,11 @@ package random
 
 import (
 	"fmt"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"math/rand"
 )
 
-func Integer(filter *parsing.Filter) int {
+func Integer(filter *types.Filter) int {
 	r := rand.Float64()
 	if filter.Max != nil {
 		r = *filter.Max * r

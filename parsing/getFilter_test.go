@@ -2,6 +2,7 @@ package parsing_test
 
 import (
 	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"reflect"
 	"regexp"
 	"testing"
@@ -14,96 +15,96 @@ func getValue(f float64) *float64 {
 func TestGetFilter(t *testing.T) {
 	testCases := []struct {
 		in   string
-		want parsing.Field
+		want types.Field
 	}{
 		{
 			"<integer>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", ""},
-				Filter: []parsing.Filter{
-					{Type: parsing.FilterInteger},
+				Filter: []types.Filter{
+					{Type: types.FilterInteger},
 				}},
 		},
 		{
 			"<integer:min=2>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", ""},
-				Filter: []parsing.Filter{
+				Filter: []types.Filter{
 					{
-						Type: parsing.FilterInteger,
+						Type: types.FilterInteger,
 						Min:  getValue(2),
 					},
 				}},
 		},
 		{
 			"<integer:min=-5>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", ""},
-				Filter: []parsing.Filter{
+				Filter: []types.Filter{
 					{
-						Type: parsing.FilterInteger,
+						Type: types.FilterInteger,
 						Min:  getValue(-5),
 					},
 				}},
 		},
 		{
 			"<float>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", ""},
-				Filter: []parsing.Filter{
-					{Type: parsing.FilterFloat},
+				Filter: []types.Filter{
+					{Type: types.FilterFloat},
 				}},
 		},
 		{
 			"<string>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", ""},
-				Filter: []parsing.Filter{
-					{Type: parsing.FilterString},
+				Filter: []types.Filter{
+					{Type: types.FilterString},
 				}},
 		},
 		{
 			"hola <string> que tal",
-			parsing.Field{
+			types.Field{
 				Data: []string{"hola ", " que tal"},
-				Filter: []parsing.Filter{
-					{Type: parsing.FilterString},
+				Filter: []types.Filter{
+					{Type: types.FilterString},
 				}},
 		},
 		{
 			"<nil>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", ""},
-				Filter: []parsing.Filter{
-					{Type: parsing.FilterNil},
+				Filter: []types.Filter{
+					{Type: types.FilterNil},
 				}},
 		},
 		{
 			"<string> <integer>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", " ", ""},
-				Filter: []parsing.Filter{
-					{Type: parsing.FilterString},
-					{Type: parsing.FilterInteger},
+				Filter: []types.Filter{
+					{Type: types.FilterString},
+					{Type: types.FilterInteger},
 				}},
 		},
 		{
 			"<string:r='[aA-zZ]\\w+'>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"", ""},
-				Filter: []parsing.Filter{
-					{Type: parsing.FilterString, Regex: regexp.MustCompile("[aA-zZ]\\w+")},
+				Filter: []types.Filter{
+					{Type: types.FilterString, Regex: regexp.MustCompile("[aA-zZ]\\w+")},
 				}},
 		},
 		{
 			"<string",
-			parsing.Field{
+			types.Field{
 				Data: []string{"<string"},
 			},
 		},
 		{
 			"<>",
-			parsing.Field{
+			types.Field{
 				Data: []string{"<>"},
 			},
 		},

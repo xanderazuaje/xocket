@@ -1,4 +1,4 @@
-package run
+package setters
 
 import (
 	"github.com/xanderazuaje/xocket/parsing"

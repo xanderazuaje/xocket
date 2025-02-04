@@ -5,16 +5,18 @@ import (
 	"github.com/xanderazuaje/xocket/colors"
 	"github.com/xanderazuaje/xocket/diffPrint"
 	"github.com/xanderazuaje/xocket/flags"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/setters"
+	"github.com/xanderazuaje/xocket/types"
 	"net/http"
+	"net/http/cookiejar"
 )
 
-func DoTest(test parsing.Test, endpoint string) (err error, ok bool) {
-	req, err := setRequest(test, endpoint)
+func DoTest(test types.Test, endpoint string, jar *cookiejar.Jar) (err error, ok bool) {
+	req, err := setters.SetRequest(test, endpoint)
 	if err != nil {
 		return err, false
 	}
-	client := http.Client{}
+	client := http.Client{Jar: jar}
 	colors.Log("@*g(RETURNED:)")
 	res, err := client.Do(req)
 	if err != nil {
@@ -31,7 +33,7 @@ func DoTest(test parsing.Test, endpoint string) (err error, ok bool) {
 	return nil, ok
 }
 
-func compareResponse(res *http.Response, exp *parsing.ExpectedResponse) bool {
+func compareResponse(res *http.Response, exp *types.ExpectedResponse) bool {
 	ok := diffPrint.PrintHttpDiff(res, exp)
 	if ok {
 		colors.Log("test @g(OK)")

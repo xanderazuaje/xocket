@@ -1,4 +1,15 @@
 endpoint: "http://localhost:8000"
+cookie-jar:
+  oven:
+    - url: "http://localhost:8000/login"
+      method: "POST"
+      form:
+        type: urlencoded
+        values:
+          password:
+            - hola
+          email:
+            - hola+1@hola.com
 tests:
   - path: "/api/user"
     method: "POST"

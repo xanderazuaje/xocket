@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"github.com/xanderazuaje/xocket/colors"
 	"github.com/xanderazuaje/xocket/flags"
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"log"
 	"reflect"
 )
 
-func tagDiff(bodyRaw []byte, ok *bool, exp *parsing.ExpectedResponse, format string) {
+func tagDiff(bodyRaw []byte, ok *bool, exp *types.ExpectedResponse, format string) {
 	var resBody any
 	if err := xml.Unmarshal(bodyRaw, &resBody); err != nil {
 		colors.Log("@b*(BODY:) @r*(ERROR) response's body is not a valid html")

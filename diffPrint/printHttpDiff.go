@@ -1,11 +1,11 @@
 package diffPrint
 
 import (
-	"github.com/xanderazuaje/xocket/parsing"
+	"github.com/xanderazuaje/xocket/types"
 	"net/http"
 )
 
-func PrintHttpDiff(res *http.Response, exp *parsing.ExpectedResponse) bool {
+func PrintHttpDiff(res *http.Response, exp *types.ExpectedResponse) bool {
 	var ok bool
 	if exp.Status != "" {
 		printStringDiff(&ok, "status", exp.Status, res.Status)
