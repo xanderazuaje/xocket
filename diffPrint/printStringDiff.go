@@ -7,7 +7,7 @@ import (
 
 func printStringDiff(isOk *bool, name, s1, s2 string) {
 	if s1 != s2 {
-		colors.Log(
+		colors.Printf(
 			"@b(%s) - @r*(DIFF:)\n\t@b*(expected:) -> '%s'\n\t@r*(got:) -> '%s'",
 			name,
 			s1,
@@ -15,6 +15,6 @@ func printStringDiff(isOk *bool, name, s1, s2 string) {
 		)
 		*isOk = false
 	} else if flags.This.RunType.Contains(flags.RunDebug) {
-		colors.Log("@b(%s) - @g*(OK!)", name)
+		colors.Printf("@b(%s) - @g*(OK!)", name)
 	}
 }

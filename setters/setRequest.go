@@ -14,7 +14,7 @@ func SetRequest(test types.Test, endpoint string) (*http.Request, error) {
 		c.Value = os.ExpandEnv(c.Value)
 	}
 	infoStr := setLinePrompt(test, endpoint)
-	colors.Log(infoStr)
+	colors.Printf(infoStr)
 	test.Path = os.ExpandEnv(test.Path)
 
 	var req *http.Request

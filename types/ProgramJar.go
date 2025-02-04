@@ -11,23 +11,29 @@ import (
 )
 
 type ProgramJar struct {
-	Oven    []*CookieOven
-	Cookies []*http.Cookie
+	Oven    map[string][]*CookieOven
+	Cookies map[string][]*http.Cookie
 }
 
 func (j *ProgramJar) FillJar() *cookiejar.Jar {
+	// http request cookies
 	client := http.Client{}
-	u, _ := url.Parse("http://0.0.0.0")
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		log.Fatal("failed to create cookie jar:", err.Error())
 	}
-	colors.Log("@*g(GETTING COOKIES...)")
+	colors.Printf("@*g(GETTING COOKIES...)")
 	var wg sync.WaitGroup
 	stdout := make(chan string)
-	for _, oven := range j.Oven {
-		wg.Add(1)
-		go oven.RequestCookie(jar, u, client, &wg, stdout)
+	for path, oven := range j.Oven {
+		u, err := url.Parse(path)
+		if err != nil {
+			colors.Printf("@r(error:) invalid url '%s'", path)
+		}
+		for _, o := range oven {
+			wg.Add(1)
+			go o.RequestCookie(jar, u, client, &wg, stdout)
+		}
 	}
 	go func() {
 		for {
@@ -43,6 +49,13 @@ func (j *ProgramJar) FillJar() *cookiejar.Jar {
 	wg.Wait()
 	close(stdout)
 	client.CloseIdleConnections()
-	jar.SetCookies(u, j.Cookies)
+	// static written cookies
+	for path, cookies := range j.Cookies {
+		u, err := url.Parse(path)
+		if err != nil {
+			colors.Printf("@r(error:) invalid url '%s'", path)
+		}
+		jar.SetCookies(u, cookies)
+	}
 	return jar
 }

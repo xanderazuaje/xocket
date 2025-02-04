@@ -33,7 +33,7 @@ var colorMap = map[rune]color{
 	'w': White,
 }
 
-func Log(format string, data ...any) {
+func Printf(format string, data ...any) {
 	r := regexp.MustCompile("@[rgybmcw*]{1,2}\\(.[^)]*\\)")
 	normal := r.Split(format, -1)
 	values := r.FindAllString(format, -1)

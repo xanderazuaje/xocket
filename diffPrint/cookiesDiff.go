@@ -9,7 +9,7 @@ import (
 func cookiesDiff(res *http.Response, exp *types.ExpectedResponse, ok *bool) {
 	resCookies := res.Cookies()
 	if len(resCookies) == 0 {
-		colors.Log("@b*(COOKIES:) @r(ERROR) - response has no cookies")
+		colors.Printf("@b*(COOKIES:) @r(ERROR) - response has no cookies")
 		*ok = false
 	} else {
 		cookiesMap := map[string]*http.Cookie{}

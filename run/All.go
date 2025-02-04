@@ -27,15 +27,14 @@ func All(program types.Program) (ok bool) {
 			}
 			log.Fatal("invalid form type executing test number " + strconv.Itoa(i+1) + ", only 'multipart' or 'urlencoded' is valid")
 		}
+		var err error
 		if !test.IgnoreCookieJar && program.CookieJar != nil {
-			test.Cookies = append(test.Cookies, program.CookieJar.Cookies...)
+			err, ok = DoTest(test, program.Endpoint, jar)
+		} else {
+			err, ok = DoTest(test, program.Endpoint, nil)
 		}
-		err, tOk := DoTest(test, program.Endpoint, jar)
 		if err != nil {
 			log.Fatal(err)
-		}
-		if !tOk {
-			ok = false
 		}
 	}
 	return ok

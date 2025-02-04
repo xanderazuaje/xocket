@@ -20,11 +20,11 @@ func jsonDiff(bodyRaw []byte, exp *types.ExpectedResponse, ok *bool) {
 		}
 		if !reflect.DeepEqual(exp.Body, resBody) {
 			*ok = false
-			colors.Log("@b*(BODY:) @r*(DIFF)")
+			colors.Printf("@b*(BODY:) @r*(DIFF)")
 			if flags.This.RunType.Contains(flags.RunDebug) {
-				colors.Log("@b*(EXPECTED:)")
+				colors.Printf("@b*(EXPECTED:)")
 			} else {
-				colors.Log("expected json and received json @*r(doesn't) match")
+				colors.Printf("expected json and received json @*r(doesn't) match")
 			}
 			// Printing expected body
 			if flags.This.RunType.Contains(flags.RunDebug) {
@@ -36,7 +36,7 @@ func jsonDiff(bodyRaw []byte, exp *types.ExpectedResponse, ok *bool) {
 				if err != nil {
 					log.Fatal(err.Error())
 				}
-				colors.Log("@b*(GOT:)")
+				colors.Printf("@b*(GOT:)")
 				buff.Reset()
 				err = json.Indent(&buff, bodyRaw, "", "  ")
 				if err != nil {
@@ -46,10 +46,10 @@ func jsonDiff(bodyRaw []byte, exp *types.ExpectedResponse, ok *bool) {
 			}
 		}
 	} else {
-		colors.Log("@b*(BODY:) @r*(DIFF)")
-		colors.Log("Response's body is not a valid json")
+		colors.Printf("@b*(BODY:) @r*(DIFF)")
+		colors.Printf("Response's body is not a valid json")
 		if flags.This.RunType.Contains(flags.RunDebug) {
-			colors.Log("@b*(GOT:)")
+			colors.Printf("@b*(GOT:)")
 			fmt.Println(bodyRaw)
 		}
 		*ok = false

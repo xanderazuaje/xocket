@@ -23,7 +23,7 @@ type Test struct {
 	Header          http.Header
 	Form            *Form
 	Expected        *ExpectedResponse
-	IgnoreCookieJar bool
+	IgnoreCookieJar bool `yaml:"ignore-cookie-jar"`
 }
 
 type BodyType string

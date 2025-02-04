@@ -9,19 +9,19 @@ import (
 )
 
 func printDebugInfo(res *http.Response) error {
-	colors.Log("@*g(CONTENT-LENGTH:) %d", res.ContentLength)
+	colors.Printf("@*g(CONTENT-LENGTH:) %d", res.ContentLength)
 	//print headers
 	headerJson, _ := json.MarshalIndent(res.Header, "", "   ")
-	colors.Log("@*b(HEADERS:)\n%+v", string(headerJson))
+	colors.Printf("@*b(HEADERS:)\n%+v", string(headerJson))
 	//print cookies
 	cookies := res.Cookies()
 	if len(cookies) > 0 {
-		colors.Log("@*b(COOKIES:)")
+		colors.Printf("@*b(COOKIES:)")
 		for _, v := range cookies {
-			colors.Log("   - %s", v.String())
+			colors.Printf("   - %s", v.String())
 		}
 	} else {
-		colors.Log("@*b(COOKIES:) none")
+		colors.Printf("@*b(COOKIES:) none")
 	}
 	//print body
 	var body []byte
@@ -32,9 +32,9 @@ func printDebugInfo(res *http.Response) error {
 		if err != nil {
 			return err
 		}
-		colors.Log("@*b(BODY (json):)\n%+v", indentedJson.String())
+		colors.Printf("@*b(BODY (json):)\n%+v", indentedJson.String())
 	} else {
-		colors.Log("@*b(BODY:)\n%+v", body)
+		colors.Printf("@*b(BODY:)\n%+v", body)
 	}
 	return nil
 }

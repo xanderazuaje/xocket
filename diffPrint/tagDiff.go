@@ -13,17 +13,17 @@ import (
 func tagDiff(bodyRaw []byte, ok *bool, exp *types.ExpectedResponse, format string) {
 	var resBody any
 	if err := xml.Unmarshal(bodyRaw, &resBody); err != nil {
-		colors.Log("@b*(BODY:) @r*(ERROR) response's body is not a valid html")
+		colors.Printf("@b*(BODY:) @r*(ERROR) response's body is not a valid html")
 		*ok = false
 		return
 	}
 	if !reflect.DeepEqual(exp.Body, resBody) {
 		*ok = false
-		colors.Log("@b*(BODY:) @r*(DIFF)")
+		colors.Printf("@b*(BODY:) @r*(DIFF)")
 		if flags.This.RunType.Contains(flags.RunDebug) {
-			colors.Log("@b*(EXPECTED:)")
+			colors.Printf("@b*(EXPECTED:)")
 		} else {
-			colors.Log("Expected %s and received %s @*r(doesn't) match", format, format)
+			colors.Printf("Expected %s and received %s @*r(doesn't) match", format, format)
 		}
 		// Printing expected body
 		if flags.This.RunType.Contains(flags.RunDebug) {
@@ -31,7 +31,7 @@ func tagDiff(bodyRaw []byte, ok *bool, exp *types.ExpectedResponse, format strin
 			if err != nil {
 				log.Fatal(err.Error())
 			}
-			colors.Log("@b*(GOT:)")
+			colors.Printf("@b*(GOT:)")
 			fmt.Println(str)
 		}
 	}

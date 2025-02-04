@@ -34,5 +34,5 @@ func printStrArrDiff(sa1, sa2 []string) {
 		}
 		strA2 = append(strA1, s...)
 	}
-	colors.Log(fmt.Sprintf(str, strings.Join(strA1, ", "), strings.Join(strA2, ", ")))
+	colors.Printf(fmt.Sprintf(str, strings.Join(strA1, ", "), strings.Join(strA2, ", ")))
 }
