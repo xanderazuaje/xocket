@@ -17,7 +17,10 @@ func DoTest(test types.Test, endpoint string, jar *cookiejar.Jar) (err error, ok
 	if err != nil {
 		return err, false
 	}
-	client := http.Client{Jar: jar}
+	client := http.Client{}
+	if jar != nil {
+		client.Jar = jar
+	}
 	colors.Printf("@*g(RETURNED:)")
 	res, err := client.Do(req)
 	if err != nil {
